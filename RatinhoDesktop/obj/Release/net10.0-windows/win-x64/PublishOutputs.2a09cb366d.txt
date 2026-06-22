@@ -1,0 +1,2 @@
+C:\Users\4mti\Documents\Rato\RatinhoDesktop\bin\Release\net10.0-windows\win-x64\publish\RatinhoDesktop.pdb
+C:\Users\4mti\Documents\Rato\RatinhoDesktop\bin\Release\net10.0-windows\win-x64\publish\RatinhoDesktop.exe
