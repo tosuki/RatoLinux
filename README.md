@@ -19,15 +19,6 @@ Um mascote de desktop interativo e divertido construído em C# e WPF (.NET 10). 
 
 ---
 
-## 🎹 Atalho Global de Teclado
-
-O projeto inclui um script que configura um atalho global no Windows:
-- Teclas: **`Ctrl + Alt + R`**
-
-Para abrir o Ratinho a qualquer momento do seu Windows, basta pressionar essa combinação de teclas.
-
----
-
 ## 🛠️ Como Executar em Modo de Desenvolvimento
 
 Certifique-se de ter o SDK do .NET 10.0 instalado.
@@ -43,16 +34,52 @@ Certifique-se de ter o SDK do .NET 10.0 instalado.
 
 ---
 
-## 📦 Como Gerar o Executável (.exe) de Produção
+## 📦 Como Compilar e Distribuir o Executável (`.exe`)
 
-Para compilar o aplicativo como um arquivo executável único (Single File) leve e sem dependências extras, execute o seguinte comando dentro da pasta `RatinhoDesktop`:
+Como se trata de uma aplicação desktop Windows, a execução é feita abrindo diretamente o arquivo `.exe`. Para distribuir o Ratinho para outras máquinas, você tem duas opções de compilação:
 
+### Opção 1: Executável Autônomo (Self-Contained) - *Recomendado para outras máquinas*
+Esta opção embute o runtime do .NET 10 dentro do próprio executável. O arquivo gerado é maior (cerca de 50MB a 60MB), mas **roda em qualquer computador Windows (x64) imediatamente ao dar duplo clique**, sem precisar que o usuário instale mais nada.
+
+Execute o comando abaixo dentro da pasta `RatinhoDesktop`:
+```bash
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true
+```
+O executável único compilado ficará em:
+`RatinhoDesktop/bin/Release/net10.0-windows/win-x64/publish/RatinhoDesktop.exe`
+
+### Opção 2: Executável Dependente de Framework (Lightweight)
+Esta opção gera um executável super leve (apenas alguns kilobytes/megabytes), mas **exige que a máquina de destino tenha o .NET Desktop Runtime 10.0 instalado**. Se o usuário não tiver, o Windows abrirá uma janela solicitando o download.
+
+Execute o comando abaixo dentro da pasta `RatinhoDesktop`:
 ```bash
 dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true
 ```
+O executável único compilado ficará em:
+`RatinhoDesktop/bin/Release/net10.0-windows/win-x64/publish/RatinhoDesktop.exe`
 
-O arquivo executável único (`RatinhoDesktop.exe`) será gerado em:
-`RatinhoDesktop/bin/Release/net10.0-windows/win-x64/publish/`
+*Nota: Ao executar em uma nova pasta, o aplicativo gera automaticamente os arquivos de som padrão dentro de uma subpasta `Assets/`. Certifique-se de que a aplicação tenha permissão de escrita no diretório onde está sendo executada (evite executar diretamente de pastas restritas como `C:\Program Files` sem privilégios de administrador).*
+
+---
+
+## ⚙️ Como Configurar Atalho e Inicialização no Windows
+
+Como o Ratinho Desktop é um aplicativo portátil, você mesmo pode configurar a inicialização automática e atalhos rápidos de teclado:
+
+### 🎹 Criar um Atalho de Teclado Global (`Ctrl + Alt + R`)
+Para poder abrir o Ratinho a qualquer momento pressionando um atalho do teclado:
+1. Clique com o botão direito sobre o executável `RatinhoDesktop.exe` (gerado na pasta de publicação ou release) e escolha **Criar atalho**.
+2. Clique com o botão direito no arquivo de atalho criado e clique em **Propriedades**.
+3. Na aba **Atalho**, clique no campo **Tecla de atalho**.
+4. Pressione a combinação de teclas desejada (ex: `Ctrl + Alt + R`).
+5. Clique em **Aplicar** e **OK**.
+6. Agora, basta pressionar essa combinação em qualquer lugar do Windows para abrir o app!
+
+### 🚀 Iniciar Junto com o Windows (Auto-start)
+Caso queira que o Ratinho inicie automaticamente sempre que você ligar o computador:
+1. Pressione as teclas `Win + R` para abrir a janela "Executar".
+2. Digite `shell:startup` e pressione Enter. Isso abrirá a pasta de inicialização do Windows.
+3. Copie o atalho do `RatinhoDesktop.exe` (criado no passo anterior) e cole-o dentro dessa pasta.
 
 ---
 
