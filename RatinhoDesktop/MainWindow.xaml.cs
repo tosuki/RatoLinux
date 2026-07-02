@@ -46,6 +46,12 @@ public partial class MainWindow : Window
     private double _pulseScale = 1.0;
     private DispatcherTimer? _pulseResetTimer;
 
+    // --- Estimativa de BPM e arrasto ---
+    private readonly System.Collections.Generic.List<DateTime> _beatTimes = new();
+    private double _estimatedBpm = 120.0;
+    private double _lastAppliedSpeedRatio = 1.0;
+    private System.Windows.Point _dragStartPoint;
+
     // --- Sincronização com a música tocando no computador ---
     private AudioReactiveService? _audioReactive;
 
@@ -211,6 +217,10 @@ public partial class MainWindow : Window
             _settings.PetId = pet.Id;
             SettingsManager.Save(_settings);
         }
+
+        // Força recálculo da velocidade para o novo pet
+        _lastAppliedSpeedRatio = 0.0;
+        AdjustAnimationSpeed();
     }
 
     private void RatoImage_MouseDown(object sender, MouseButtonEventArgs e)
@@ -220,8 +230,25 @@ public partial class MainWindow : Window
             if (e.ClickCount == 2)
             {
                 ToggleDvdMode();
+                e.Handled = true;
             }
             else
+            {
+                _dragStartPoint = e.GetPosition(this);
+            }
+        }
+    }
+
+    private void RatoImage_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed && !_isDvdMode)
+        {
+            System.Windows.Point currentPoint = e.GetPosition(this);
+            Vector diff = _dragStartPoint - currentPoint;
+
+            // Só inicia o arrasto se o mouse se mover além do limite padrão do Windows
+            if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
             {
                 PlayClickSound();
                 try
@@ -230,7 +257,7 @@ public partial class MainWindow : Window
                 }
                 catch
                 {
-                    // Ignora erros se o botão esquerdo for solto rapidamente
+                    // Ignora erros se o arrasto for interrompido abruptamente
                 }
             }
         }
@@ -389,24 +416,92 @@ public partial class MainWindow : Window
         Dispatcher.BeginInvoke(new Action(PulseOnBeat));
     }
 
+    private void UpdateBpmEstimation()
+    {
+        var now = DateTime.UtcNow;
+
+        // Se a última batida foi há mais de 3 segundos, limpa o histórico
+        if (_beatTimes.Count > 0 && (now - _beatTimes[^1]).TotalSeconds > 3.0)
+        {
+            _beatTimes.Clear();
+        }
+
+        _beatTimes.Add(now);
+
+        if (_beatTimes.Count > 8)
+        {
+            _beatTimes.RemoveAt(0);
+        }
+
+        if (_beatTimes.Count >= 2)
+        {
+            double totalIntervalMs = 0;
+            int count = 0;
+            for (int i = 1; i < _beatTimes.Count; i++)
+            {
+                double interval = (_beatTimes[i] - _beatTimes[i - 1]).TotalMilliseconds;
+                // Considera apenas intervalos que equivalem de 40 a 240 BPM (1500ms a 250ms)
+                if (interval >= 250 && interval <= 1500)
+                {
+                    totalIntervalMs += interval;
+                    count++;
+                }
+            }
+
+            if (count > 0)
+            {
+                double avgIntervalMs = totalIntervalMs / count;
+                _estimatedBpm = 60000.0 / avgIntervalMs;
+            }
+        }
+        else
+        {
+            _estimatedBpm = 120.0;
+        }
+    }
+
+    private void AdjustAnimationSpeed()
+    {
+        if (MenuAudioReactive.IsChecked)
+        {
+            double targetRatio = _estimatedBpm / _currentPet.BaseBpm;
+            targetRatio = Math.Clamp(targetRatio, 0.5, 2.5);
+
+            // Apenas aplica a alteração de velocidade se houver mudança relevante para evitar engasgos
+            if (Math.Abs(targetRatio - _lastAppliedSpeedRatio) > 0.05)
+            {
+                _lastAppliedSpeedRatio = targetRatio;
+                ImageBehavior.SetAnimationSpeedRatio(RatoImage, targetRatio);
+            }
+        }
+        else
+        {
+            if (_lastAppliedSpeedRatio != 1.0)
+            {
+                _lastAppliedSpeedRatio = 1.0;
+                ImageBehavior.SetAnimationSpeedRatio(RatoImage, 1.0);
+            }
+        }
+    }
+
     private void PulseOnBeat()
     {
+        UpdateBpmEstimation();
+        AdjustAnimationSpeed();
+
         double intensity = _audioReactive?.LastBeatIntensity ?? 1.0;
 
-        // "Pulo" visual proporcional à força da batida, com um teto para não ficar exagerado.
-        double bump = Math.Min(0.35, 0.12 * intensity);
+        // "Pulo" visual proporcional à força da batida
+        double bump = Math.Min(0.25, 0.08 * intensity);
         _pulseScale = 1.0 + bump;
         ApplyTransform();
 
-        // Acelera brevemente a reprodução do gif, dando a sensação de "dançar" no tempo da música.
-        double speedRatio = 1.0 + Math.Min(0.8, 0.3 * intensity);
-        ImageBehavior.SetAnimationSpeedRatio(RatoImage, speedRatio);
-
         _pulseResetTimer?.Stop();
-        _pulseResetTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(140) };
+        _pulseResetTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120) };
         _pulseResetTimer.Tick += (s, ev) =>
         {
-            ResetPulse();
+            _pulseScale = 1.0;
+            ApplyTransform();
             _pulseResetTimer?.Stop();
         };
         _pulseResetTimer.Start();
@@ -416,7 +511,10 @@ public partial class MainWindow : Window
     {
         _pulseScale = 1.0;
         ApplyTransform();
-        ImageBehavior.SetAnimationSpeedRatio(RatoImage, 1.0);
+        
+        _beatTimes.Clear();
+        _estimatedBpm = 120.0;
+        AdjustAnimationSpeed();
     }
 
     private void ApplyTransform()

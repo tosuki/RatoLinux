@@ -15,13 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\rato.gif" />
-    <Resource Include="Assets\Novos\vaca.gif" />
-    <Resource Include="Assets\Novos\cat.gif" />
-    <Resource Include="Assets\Novos\silly-cat-dance.gif" />
-    <Resource Include="Assets\Novos\dancing-dance.gif" />
-    <Resource Include="Assets\Novos\limpando.gif" />
-    <Resource Include="Assets\Novos\eisque.gif" />
+    <Resource Include="Assets\**\*.gif" />
+    <None Update="Assets\**\*.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\pets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

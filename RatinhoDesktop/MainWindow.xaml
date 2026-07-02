@@ -31,6 +31,7 @@
                    Height="200"
                    Cursor="Hand"
                    MouseDown="RatoImage_MouseDown"
+                   MouseMove="RatoImage_MouseMove"
                    RenderTransformOrigin="0.5,0.5"
                    ToolTip="Ratinho de Desktop!&#x0a;• Arraste com o botão esquerdo para mover.&#x0a;• Clique duplo para ativar/desativar o Modo DVD.&#x0a;• Botão direito para abrir o menu.">
                 
