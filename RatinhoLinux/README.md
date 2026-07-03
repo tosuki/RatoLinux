@@ -1,5 +1,7 @@
 # Ratinho Desktop Linux 🐭🐧
 
+![Preview do Mascote](assets/preview.gif)
+
 Este é o port oficial em **Golang** do **Ratinho Desktop**, um mascote virtual retro interativo e reativo que flutua na tela do seu computador. Esta versão foi desenvolvida sob a engine de jogos **Ebitengine (v2)**, garantindo uma execução leve (cerca de 10-15MB de consumo de RAM) e compatibilidade com distribuições Linux modernas.
 
 ---
