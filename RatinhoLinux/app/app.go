@@ -559,9 +559,9 @@ func (g *Game) Update() error {
 		g.menu.Y = 5
 		g.menu.Visible = true
 		
-		// Aumenta a largura da janela para acomodar o menu transparente
+		// Aumenta a largura da janela para acomodar o menu principal + submenu
 		menuHeight := len(g.menu.Items) * g.menu.ItemHeight
-		winW := int(g.settings.Size) + 180 + 10
+		winW := int(g.settings.Size) + 200 + 200 + 25
 		winH := int(g.settings.Size) + 10
 		if menuHeight+10 > winH {
 			winH = menuHeight + 10

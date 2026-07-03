@@ -33,7 +33,7 @@ type Menu struct {
 func NewMenu(items []*MenuItem) *Menu {
 	return &Menu{
 		Items:      items,
-		Width:      180,
+		Width:      200,
 		ItemHeight: 20,
 		Selected:   -1,
 	}
