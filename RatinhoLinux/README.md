@@ -28,7 +28,7 @@ Para compilar o aplicativo, você precisa dos pacotes de desenvolvimento do X11/
 
 ### No Fedora:
 ```bash
-sudo dnf install -y gcc pkgconf-pkg-config alsa-lib-devel libX11-devel libXrandr-devel libXcursor-devel libXinerama-devel libXi-devel libXxf86vm-devel pulseaudio-utils pipewire-utils
+sudo dnf install -y gcc pkgconf-pkg-config alsa-lib-devel mesa-libGL-devel libX11-devel libXrandr-devel libXcursor-devel libXinerama-devel libXi-devel libXxf86vm-devel pulseaudio-utils pipewire-utils
 ```
 
 ### No Ubuntu / Debian / Mint:

@@ -2,7 +2,6 @@ package audio
 
 import (
 	"bytes"
-	"io"
 	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
@@ -64,7 +63,7 @@ func PlayClickSound(char SoundCharacter) {
 
 	ctx := GetAudioContext()
 	wavBytes := GenerateWavBytes(char)
-	stream, err := wav.DecodeWithContext(ctx, bytes.NewReader(wavBytes))
+	stream, err := wav.Decode(ctx, bytes.NewReader(wavBytes))
 	if err != nil {
 		return
 	}
@@ -102,7 +101,7 @@ func StartMusic() {
 
 	// Gera o WAV da melodia e decodifica
 	wavBytes := GenerateMelodyWavBytes()
-	stream, err := wav.DecodeWithContext(ctx, bytes.NewReader(wavBytes))
+	stream, err := wav.Decode(ctx, bytes.NewReader(wavBytes))
 	if err != nil {
 		return
 	}

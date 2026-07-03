@@ -12,6 +12,7 @@ if [ -f /etc/os-release ]; then
           gcc \
           pkgconf-pkg-config \
           alsa-lib-devel \
+          mesa-libGL-devel \
           libX11-devel \
           libXrandr-devel \
           libXcursor-devel \
