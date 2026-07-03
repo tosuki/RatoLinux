@@ -295,6 +295,12 @@ func decodeGif(data []byte) (*GifPlayer, error) {
 	canvas := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	for i, img := range g.Image {
+		// Se a instrução de descarte do frame anterior exigir limpar o fundo,
+		// limpamos o canvas para evitar o acúmulo de imagens (efeito fantasma/rastro)
+		if i > 0 && (g.Disposal[i-1] == gif.DisposalBackground || g.Disposal[i-1] == gif.DisposalPrevious) {
+			draw.Draw(canvas, canvas.Bounds(), image.Transparent, image.Point{}, draw.Src)
+		}
+
 		draw.Draw(canvas, img.Bounds(), img, img.Bounds().Min, draw.Over)
 		player.Frames[i] = ebiten.NewImageFromImage(canvas)
 		player.Delays[i] = g.Delay[i]
