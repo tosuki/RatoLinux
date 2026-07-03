@@ -2,7 +2,6 @@ package app
 
 import (
 	"image/color"
-	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"

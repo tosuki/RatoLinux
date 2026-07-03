@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bytes"
 	"encoding/json"
 	"image"
 	"image/color"
@@ -51,16 +52,6 @@ type GifPlayer struct {
 	Timer  float64
 }
 
-// AppSettings mapeado de config.go
-type AppSettings struct {
-	PetID                string  `json:"petId"`
-	Size                 float64 `json:"size"`
-	SqueakEnabled        bool    `json:"squeakEnabled"`
-	MusicEnabled         bool    `json:"musicEnabled"`
-	AudioReactiveEnabled bool    `json:"audioReactiveEnabled"`
-	Opacity              float64 `json:"opacity"`
-	Topmost              bool    `json:"topmost"`
-}
 
 // Game representa a aplicação principal do Ebiten.
 type Game struct {
@@ -612,7 +603,7 @@ func (g *Game) Update() error {
 	// Lógica do Modo DVD
 	if g.isDvdMode && !g.isDragging {
 		wx, wy := ebiten.WindowPosition()
-		sw, sh := ebiten.MonitorResolution()
+		sw, sh := ebiten.Monitor().Size()
 		
 		// Se não encontrou resolução do monitor, usa um fallback razoável
 		if sw == 0 || sh == 0 {

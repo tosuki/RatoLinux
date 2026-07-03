@@ -32,18 +32,10 @@ func main() {
 	}
 
 	// Carrega configurações persistidas
-	settings := LoadSettings()
+	settings := app.LoadSettings()
 
 	// Cria a instância do Game
-	game := app.NewGame(app.AppSettings{
-		PetID:                settings.PetID,
-		Size:                 settings.Size,
-		SqueakEnabled:        settings.SqueakEnabled,
-		MusicEnabled:         settings.MusicEnabled,
-		AudioReactiveEnabled: settings.AudioReactiveEnabled,
-		Opacity:              settings.Opacity,
-		Topmost:              settings.Topmost,
-	})
+	game := app.NewGame(settings)
 
 	// Inicializa o servidor IPC socket para escutar comandos --toggle
 	ipcCloser, err := app.StartIPCServer(func() {
