@@ -1,0 +1,46 @@
+{
+  "pets": [
+    {
+      "id": "rato",
+      "displayName": "Ratinho",
+      "baseBpm": 120.0,
+      "sound": "Squeak"
+    },
+    {
+      "id": "vaca",
+      "displayName": "Vaca",
+      "baseBpm": 80.0,
+      "sound": "Moo"
+    },
+    {
+      "id": "cat",
+      "displayName": "Gatinho",
+      "baseBpm": 110.0,
+      "sound": "Meow"
+    },
+    {
+      "id": "silly-cat-dance",
+      "displayName": "Gato Dançarino",
+      "baseBpm": 130.0,
+      "sound": "Pop"
+    },
+    {
+      "id": "dancing-dance",
+      "displayName": "Dançarino",
+      "baseBpm": 125.0,
+      "sound": "Pop"
+    },
+    {
+      "id": "limpando",
+      "displayName": "Limpando",
+      "baseBpm": 100.0,
+      "sound": "Pop"
+    },
+    {
+      "id": "eisque",
+      "displayName": "Eisque",
+      "baseBpm": 120.0,
+      "sound": "Chime"
+    }
+  ]
+}
